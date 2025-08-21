@@ -1,13 +1,12 @@
-. ICD-10 Auto-Coder
+# ICD-10 Auto Encoder
 
-What it does: User inputs a description like “Patient presents with chest pain and shortness of breath” → AI suggests possible ICD-10 codes with confidence levels.
+This repository contains the implementation of an ICD-10 auto-encoder. The project is organized into the following directories:
 
-Tech:
+- `backend/`: Contains backend-related code.
+- `frontend/`: Contains frontend-related code.
+- `data/`: Contains data files used for training and testing.
+- `notebooks/`: Contains Jupyter notebooks for experimentation and analysis.
 
-Use a pre-trained medical embeddings model (BioBERT, ClinicalBERT).
+## Getting Started
 
-Fallback to LLM for text → code mapping.
-
-PostgreSQL table to store mapping history.
-
-Why it works: Demonstrates automation in medical coding, which ties directly to claims + insurance.
+To get started, clone this repository and navigate to the respective directories for more details.
