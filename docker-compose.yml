@@ -15,6 +15,15 @@ services:
     ports:
       - "5432:5432"
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: icd10-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -28,8 +37,14 @@ services:
       PG_PORT: 5432
       PG_HOST: db
       HOT_RELOAD: "true"
+      LLM_BASE_URL: http://ollama:11434
+      LLM_MODEL: llama3.2:3b-instruct
+      LLM_TEMP: 0.2
+      LLM_MAX_TOKENS: 96
+
     depends_on:
       - db
+      # - ollama
     ports:
       - "8000:8000"
 
@@ -47,3 +62,4 @@ services:
 
 volumes:
   pgdata:
+  ollama:

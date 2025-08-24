@@ -1,3 +1,6 @@
+import asyncio
+import httpx
+from scripts.utils.rationale import PROMPT_TMPL, LLM_MODEL, LLM_URL, LLM_TEMP, LLM_MAX
 def embedding(model_id: str, text: str):
     """
     Returns the embedding vector for the given text using the specified model_id.
@@ -123,10 +126,30 @@ def retrieve_pgvector(note: str, top_k: int = 5):
 def healthz():
     return {"ok": True}
 
+
+def llm_rationale(note: str, code: str, title: str, timeout=6.0) -> str:
+    try:
+        payload = {
+            "model": LLM_MODEL,
+            "prompt": PROMPT_TMPL.format(note=note, code=code, title=title),
+            "options": {"temperature": LLM_TEMP, "num_predict": LLM_MAX}
+        }
+        with httpx.Client(timeout=timeout) as client:
+            r = client.post(f"{LLM_URL}/api/generate", json=payload)
+            r.raise_for_status()
+            text = r.json().get("response", "").strip()
+            text = text.split("\n")[0]
+            return text[:300]
+    except Exception:
+        return f"Presentation is consistent with {title.lower()} based on the note text."
+
 @app.post("/suggest")
 def suggest(req: SuggestReq):
     t0 = time.time()
     results = retrieve_pgvector(req.note, req.top_k)
+    # Synchronously add rationale to each result using llm_rationale
+    for r in results:
+        r["rationale"] = llm_rationale(req.note, r["code"], r["title"])
     return {
         "query": req.note,
         "results": results,
