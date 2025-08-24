@@ -21,5 +21,12 @@ if [ ! -f "$AUTOCODER_INDEX_DIR/tfidf_vectorizer.pkl" ] || [ ! -f "$AUTOCODER_IN
   python scripts/build_index.py --csv "$AUTOCODER_CODES_CSV" --out "$AUTOCODER_INDEX_DIR" $PG_ARGS
 fi
 
-# Start API
-exec uvicorn backend.app:app --host 0.0.0.0 --port 8000
+
+# Enable hot reload in development mode
+if [ "${HOT_RELOAD:-false}" = "true" ]; then
+  echo "[entrypoint] Starting API with hot reload enabled."
+  exec uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload --reload-dir backend
+else
+  echo "[entrypoint] Starting API without hot reload."
+  exec uvicorn backend.app:app --host 0.0.0.0 --port 8000
+fi

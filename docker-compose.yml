@@ -27,6 +27,7 @@ services:
       PG_DBNAME: icd10db
       PG_PORT: 5432
       PG_HOST: db
+      HOT_RELOAD: "true"
     depends_on:
       - db
     ports:
