@@ -6,10 +6,19 @@ set -euo pipefail
 
 mkdir -p "$AUTOCODER_INDEX_DIR"
 
+
 # Build TF-IDF artifacts if missing
 if [ ! -f "$AUTOCODER_INDEX_DIR/tfidf_vectorizer.pkl" ] || [ ! -f "$AUTOCODER_INDEX_DIR/tfidf_matrix.pkl" ]; then
   echo "[entrypoint] Building TF-IDF index from $AUTOCODER_CODES_CSV -> $AUTOCODER_INDEX_DIR"
-  python scripts/build_index.py --csv "$AUTOCODER_CODES_CSV" --out "$AUTOCODER_INDEX_DIR"
+
+  PG_ARGS=""
+  [ -n "$PG_HOST" ] && PG_ARGS="$PG_ARGS --pg-host $PG_HOST"
+  [ -n "$PG_PORT" ] && PG_ARGS="$PG_ARGS --pg-port $PG_PORT"
+  [ -n "$PG_USER" ] && PG_ARGS="$PG_ARGS --pg-user $PG_USER"
+  [ -n "$PG_PASSWORD" ] && PG_ARGS="$PG_ARGS --pg-password $PG_PASSWORD"
+  [ -n "$PG_DBNAME" ] && PG_ARGS="$PG_ARGS --pg-dbname $PG_DBNAME"
+
+  python scripts/build_index.py --csv "$AUTOCODER_CODES_CSV" --out "$AUTOCODER_INDEX_DIR" $PG_ARGS
 fi
 
 # Start API

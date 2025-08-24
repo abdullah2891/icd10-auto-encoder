@@ -5,9 +5,11 @@ services:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_USER: icd10user
-      POSTGRES_PASSWORD: icd10pass
-      POSTGRES_DB: icd10db
+      PG_USER: icd10user
+      PG_PASSWORD: icd10pass
+      PG_DBNAME: icd10db
+      PG_PORT: 5432
+      PG_HOST: 0.0.0.0
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -20,7 +22,11 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgres://icd10user:icd10pass@db:5432/icd10db
-      # ...other env vars as needed...
+      PG_USER: icd10user
+      PG_PASSWORD: icd10pass
+      PG_DBNAME: icd10db
+      PG_PORT: 5432
+      PG_HOST: db
     depends_on:
       - db
     ports:
@@ -33,7 +39,6 @@ services:
     restart: unless-stopped
     environment:
       BACKEND_URL: http://backend:8000
-      # ...other env vars as needed...
     depends_on:
       - backend
     ports:
