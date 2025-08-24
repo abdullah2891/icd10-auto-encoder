@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
 from utils.text_utils import build_search_text
 from utils.pg_utils import get_pg_connection, ensure_icd10_table, upsert_icd10_codes
-
+from sentence_transformers import SentenceTransformer
 
 if __name__ == "__main__":
     sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
@@ -17,6 +17,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--csv", required=True)
     ap.add_argument("--out", required=True)
+    # Model name argument
+    ap.add_argument("--model-name", default="sentence-transformers/all-MiniLM-L6-v2", help="Model name to use (default: sentence-transformers/all-MiniLM-L6-v2)")
     # PostgreSQL connection arguments
     ap.add_argument("--pg-host", default=None, help="PostgreSQL host")
     ap.add_argument("--pg-port", default=5432, type=int, help="PostgreSQL port")
@@ -36,7 +38,14 @@ if __name__ == "__main__":
         ensure_icd10_table(pg_conn)
 
 
+    # --- Load embedding model ---
+    model = SentenceTransformer(args.model_name)
+    dim = model.get_sentence_embedding_dimension()
+    print(f"Loaded model: {args.model_name} (dim={dim})")
+
     df["search_text"] = df.apply(build_search_text, axis=1)
+    df["embedding"] = df["search_text"].apply(lambda x: model.encode(x, normalize_embeddings=True).tolist())
+
 
     # Insert rows into icd10_codes table if PostgreSQL connection is available
     if pg_conn is not None:
