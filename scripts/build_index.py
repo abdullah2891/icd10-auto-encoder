@@ -7,7 +7,8 @@ import argparse, os, json, pickle, pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
 from utils.text_utils import build_search_text
-from utils.pg_utils import get_pg_connection, ensure_icd10_table, upsert_icd10_codes
+from utils.pg_utils import ensure_icd10_table, upsert_icd10_codes
+from utils.db import get_pg_conn
 from sentence_transformers import SentenceTransformer
 
 if __name__ == "__main__":
@@ -27,8 +28,8 @@ if __name__ == "__main__":
     ap.add_argument("--pg-dbname", default=None, help="PostgreSQL database name")
     args = ap.parse_args()
 
-    # Connect to PostgreSQL using utility
-    pg_conn = get_pg_connection(args)
+    # Connect to PostgreSQL using centralized db util
+    pg_conn = get_pg_conn()
 
     os.makedirs(args.out, exist_ok=True)
     df = pd.read_csv(args.csv)

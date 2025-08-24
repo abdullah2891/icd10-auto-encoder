@@ -2,9 +2,9 @@
 """
 PostgreSQL utility functions for ICD10 indexer
 """
-import psycopg2
 
 from pgvector.psycopg2 import register_vector
+
 def register_vector_type(conn):
     """
     Register the pgvector extension with the PostgreSQL connection.
@@ -12,26 +12,6 @@ def register_vector_type(conn):
     register_vector(conn)
     print("pgvector type registered.")
 
-
-
-def get_pg_connection(args):
-    if all([args.pg_host, args.pg_user, args.pg_password, args.pg_dbname]):
-        try:
-            conn = psycopg2.connect(
-                host=args.pg_host,
-                port=args.pg_port,
-                user=args.pg_user,
-                password=args.pg_password,
-                dbname=args.pg_dbname
-            )
-            print("Connected to PostgreSQL.")
-            return conn
-        except Exception as e:
-            print(f"Failed to connect to PostgreSQL: {e}")
-            return None
-    else:
-        print("PostgreSQL connection parameters not fully provided. Skipping DB connection.")
-        return None
 
 def ensure_icd10_table(conn):
     # 1. Create extension if not exists and commit
