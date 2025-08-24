@@ -10,3 +10,8 @@ This repository contains the implementation of an ICD-10 auto-encoder. The proje
 ## Getting Started
 
 To get started, clone this repository and navigate to the respective directories for more details.
+
+how to start app 
+docker compose up --build
+# backend → http://localhost:8000/healthz
+# frontend → http://localhost:8501

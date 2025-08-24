@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.env
+.venv/
+.env*/
+.git/
+.gitignore
+.vscode/
+.DS_Store
+node_modules/
+.data/
+**/__pycache__/
+# Python build artifacts
+build/
+dist/
+*.egg-info/
+# Streamlit
+.streamlit/
