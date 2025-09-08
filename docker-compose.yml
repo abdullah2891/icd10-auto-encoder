@@ -24,7 +24,7 @@ services:
       - ollama:/root/.ollama
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      test: ["CMD", "ollama run llama3.2:1b"]
       interval: 5s
       timeout: 2s
       retries: 20
