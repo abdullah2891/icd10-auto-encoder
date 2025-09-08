@@ -23,6 +23,11 @@ services:
     volumes:
       - ollama:/root/.ollama
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
 
   backend:
     build:
@@ -38,13 +43,13 @@ services:
       PG_HOST: db
       HOT_RELOAD: "true"
       LLM_BASE_URL: http://ollama:11434
-      LLM_MODEL: llama3.2:3b-instruct
+      LLM_MODEL: llama3.2:1b
       LLM_TEMP: 0.2
       LLM_MAX_TOKENS: 96
 
     depends_on:
       - db
-      # - ollama
+      - ollama
     ports:
       - "8000:8000"
 

@@ -128,20 +128,22 @@ def healthz():
 
 
 def llm_rationale(note: str, code: str, title: str, timeout=6.0) -> str:
-    try:
-        payload = {
-            "model": LLM_MODEL,
-            "prompt": PROMPT_TMPL.format(note=note, code=code, title=title),
-            "options": {"temperature": LLM_TEMP, "num_predict": LLM_MAX}
-        }
-        with httpx.Client(timeout=timeout) as client:
-            r = client.post(f"{LLM_URL}/api/generate", json=payload)
-            r.raise_for_status()
-            text = r.json().get("response", "").strip()
-            text = text.split("\n")[0]
-            return text[:300]
-    except Exception:
-        return f"Presentation is consistent with {title.lower()} based on the note text."
+    # try:
+    payload = {
+        "model": LLM_MODEL,
+        "prompt": PROMPT_TMPL.format(note=note, code=code, title=title),
+        "options": {"temperature": LLM_TEMP, "num_predict": LLM_MAX},
+        "stream": False
+    }
+    with httpx.Client(timeout=timeout) as client:
+        r = client.post(f"{LLM_URL}/api/generate", json=payload)
+        try:
+            response_json = r.json()
+            
+            return response_json['response']
+        except Exception as e:
+            print(f"Failed to parse response as JSON: {e}")
+            return f"Presentation is consistent with {title.lower()} based on the note text."
 
 @app.post("/suggest")
 def suggest(req: SuggestReq):
