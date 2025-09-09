@@ -1,5 +1,5 @@
 # TF-IDF only (no faiss)
-FROM python:3.11-slim
+FROM public.ecr.aws/docker/library/python:3.11-slim
 
 # System deps for numpy/scipy/scikit-learn wheels
 RUN apt-get update \
