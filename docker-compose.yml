@@ -23,11 +23,6 @@ services:
     volumes:
       - ollama:/root/.ollama
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "ollama run llama3.2:1b"]
-      interval: 5s
-      timeout: 2s
-      retries: 20
 
   backend:
     build:
