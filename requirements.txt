@@ -1,7 +1,9 @@
 # Core API
 fastapi==0.115.0
 uvicorn==0.30.6
-pydantic==2.9.0
+starlette==0.39.2
+pydantic==2.8.2
+pydantic-core==2.20.1
 psycopg2-binary==2.9.6
 pgvector>=0.3.2
 sentence-transformers>=3.0.0

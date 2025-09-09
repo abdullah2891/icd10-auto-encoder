@@ -16,8 +16,9 @@ WORKDIR /app
 
 # Install Python deps first (leverages layer cache)
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
+RUN python -m pip install --upgrade pip setuptools wheel \
+ && pip install --only-binary=:all: --timeout 180 --retries 8 -r /tmp/requirements.txt
+ 
 # Copy source
 COPY backend ./backend
 COPY scripts ./scripts
