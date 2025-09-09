@@ -27,7 +27,7 @@ ENV PIP_NO_CACHE_DIR=1 \
 RUN python -m pip install -U pip setuptools wheel \
  && pip install --only-binary=:all: -r /tmp/requirements.txt \
  || (apt-get update && apt-get install -y --no-install-recommends build-essential rustc cargo \
-     && pip install -vvv -r /tmp/requirements.txt && \
+     && pip install  -r /tmp/requirements.txt && \
      apt-get purge -y build-essential rustc cargo && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*)
 
  
